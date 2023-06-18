@@ -9,6 +9,7 @@ import (
 	"strings"
 )
 
+// операции
 type operation string
 
 const (
@@ -18,9 +19,8 @@ const (
 	multiplication = "*"
 )
 
+// ошибки
 const alert = "Ошибка: "
-
-type errs string
 
 const (
 	notMathsExpression   = alert + "Строка не является математической операцией"
