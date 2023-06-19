@@ -11,7 +11,7 @@ type Numerals struct {
 	roman  string
 }
 
-var SetOfNumerals = [12]Numerals{
+var SetOfNumerals = [11]Numerals{
 	{arabic: 0, roman: "s"},
 	{arabic: 1, roman: "I"},
 	{arabic: 2, roman: "II"},
@@ -23,10 +23,9 @@ var SetOfNumerals = [12]Numerals{
 	{arabic: 8, roman: "VIII"},
 	{arabic: 9, roman: "IX"},
 	{arabic: 10, roman: "X"},
-	{arabic: 50, roman: "L"},
 }
 
-func ConvertRomanToArabic(number string) (int, error) {
+func convertRomanToArabic(number string) (int, error) {
 	for _, r := range SetOfNumerals {
 		if number == r.roman {
 			return r.arabic, nil
@@ -35,7 +34,7 @@ func ConvertRomanToArabic(number string) (int, error) {
 	return 0, errors.New(unknown)
 }
 
-func ConvertArabicToRoman(number int) (string, error) {
+func convertArabicToRoman(number int) (string, error) {
 
 	if number < 1 {
 		return "", errors.New(fmt.Sprintf(onlyPositiveNumbersInRoman, number))
@@ -60,7 +59,7 @@ func ConvertArabicToRoman(number int) (string, error) {
 		if number/10 == 4 {
 			mod := number % 10
 			if mod < 9 {
-				str, _ := ConvertArabicToRoman(mod)
+				str, _ := convertArabicToRoman(mod)
 				return "XL" + str, nil
 			}
 
@@ -86,7 +85,7 @@ func addOrder(number int) (string, error) {
 
 			mod := number % 10
 			if mod < 9 {
-				str, _ := ConvertArabicToRoman(mod)
+				str, _ := convertArabicToRoman(mod)
 				return strings.Repeat("X", i) + str, nil
 			}
 

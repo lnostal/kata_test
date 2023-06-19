@@ -124,51 +124,11 @@ func calculate(a, b int, op operation) (int, error) {
 }
 
 func isRoman(s string) (bool, int) {
-	num, err := ConvertRomanToArabic(s)
+	num, err := convertRomanToArabic(s)
 
 	if err != nil {
 		return false, 0
 	}
 
 	return true, num
-}
-
-func main() {
-
-	fmt.Println("Введите выражение")
-	text, err := readExpression()
-
-	if err != nil {
-		returnError(err)
-		return
-	}
-
-	op, err := getOperator(text)
-
-	if err != nil {
-		returnError(err)
-		return
-	}
-
-	a, b, op, isRoman, err := analyzeExpression(text, op)
-
-	if err != nil {
-		returnError(err)
-		return
-	}
-
-	answer, _ := calculate(a, b, op)
-
-	if isRoman {
-		ansStr, err := ConvertArabicToRoman(answer)
-		if err != nil {
-			returnError(err)
-			return
-		}
-
-		fmt.Printf("Ответ: %s\n", ansStr)
-		return
-	}
-
-	fmt.Printf("Ответ: %d\n", answer)
 }
