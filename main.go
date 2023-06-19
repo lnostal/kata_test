@@ -1,29 +1,21 @@
 package main
 
-import "fmt"
+import (
+	"fmt"
+	"strconv"
+)
 
-func main() {
-
-	fmt.Println("Введите выражение")
-	text, err := readExpression()
-
-	if err != nil {
-		returnError(err)
-		return
-	}
-
+func calc(text string) (string, error) {
 	op, err := getOperator(text)
 
 	if err != nil {
-		returnError(err)
-		return
+		return "", err
 	}
 
 	a, b, op, isRoman, err := analyzeExpression(text, op)
 
 	if err != nil {
-		returnError(err)
-		return
+		return "", err
 	}
 
 	answer, _ := calculate(a, b, op)
@@ -31,13 +23,26 @@ func main() {
 	if isRoman {
 		ansStr, err := convertArabicToRoman(answer)
 		if err != nil {
-			returnError(err)
-			return
+			return ansStr, err
 		}
 
-		fmt.Printf("Ответ: %s\n", ansStr)
+		return ansStr, nil
+	}
+
+	return strconv.Itoa(answer), nil
+}
+
+func main() {
+
+	fmt.Println("Введите выражение")
+	text := readExpression()
+
+	answer, err := calc(text)
+
+	if err != nil {
+		fmt.Println(err.Error())
 		return
 	}
 
-	fmt.Printf("Ответ: %d\n", answer)
+	fmt.Printf("Ответ: %s\n", answer)
 }

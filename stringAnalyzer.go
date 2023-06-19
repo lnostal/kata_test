@@ -9,16 +9,11 @@ import (
 	"strings"
 )
 
-func readExpression() (string, error) {
-
-	reader := bufio.NewReader(os.Stdin)
-	expression, _ := reader.ReadString('\n')
-	expression = strings.TrimSpace(expression)
-
+func preCheckExpression(expression string) error {
 	splited := strings.Split(expression, "")
 
 	if len(splited) < 3 {
-		return "", errors.New(notMathsExpression)
+		return errors.New(notMathsExpression)
 	}
 
 	countEmpties := 0
@@ -30,10 +25,37 @@ func readExpression() (string, error) {
 	}
 
 	if len(splited)-countEmpties < 3 {
-		return "", errors.New(notMathsExpression)
+		return errors.New(notMathsExpression)
 	}
 
-	return expression, nil
+	return nil
+}
+
+func readExpression() string {
+
+	reader := bufio.NewReader(os.Stdin)
+	expression, _ := reader.ReadString('\n')
+	expression = strings.TrimSpace(expression)
+
+	//splited := strings.Split(expression, "")
+	//
+	//if len(splited) < 3 {
+	//	return "", errors.New(notMathsExpression)
+	//}
+	//
+	//countEmpties := 0
+	//
+	//for _, s := range splited {
+	//	if s == " " {
+	//		countEmpties++
+	//	}
+	//}
+	//
+	//if len(splited)-countEmpties < 3 {
+	//	return "", errors.New(notMathsExpression)
+	//}
+
+	return expression
 }
 
 func getOperator(s string) (operation, error) {
@@ -50,6 +72,11 @@ func getOperator(s string) (operation, error) {
 }
 
 func analyzeExpression(s string, op operation) (a int, b int, o operation, rom bool, err error) {
+
+	noErrors := preCheckExpression(s)
+	if noErrors != nil {
+		return 0, 0, op, false, errors.New(noErrors.Error())
+	}
 
 	numbers := strings.Split(s, string(op))
 
@@ -100,11 +127,6 @@ func analyzeExpression(s string, op operation) (a int, b int, o operation, rom b
 	}
 
 	return numInts[0], numInts[1], op, romanCounts == 2, nil
-}
-
-func returnError(e error) {
-	fmt.Println(e.Error())
-	return
 }
 
 func calculate(a, b int, op operation) (int, error) {
