@@ -37,24 +37,6 @@ func readExpression() string {
 	expression, _ := reader.ReadString('\n')
 	expression = strings.TrimSpace(expression)
 
-	//splited := strings.Split(expression, "")
-	//
-	//if len(splited) < 3 {
-	//	return "", errors.New(notMathsExpression)
-	//}
-	//
-	//countEmpties := 0
-	//
-	//for _, s := range splited {
-	//	if s == " " {
-	//		countEmpties++
-	//	}
-	//}
-	//
-	//if len(splited)-countEmpties < 3 {
-	//	return "", errors.New(notMathsExpression)
-	//}
-
 	return expression
 }
 
@@ -74,6 +56,7 @@ func getOperator(s string) (operation, error) {
 func analyzeExpression(s string, op operation) (a int, b int, o operation, rom bool, err error) {
 
 	noErrors := preCheckExpression(s)
+
 	if noErrors != nil {
 		return 0, 0, op, false, errors.New(noErrors.Error())
 	}
@@ -84,16 +67,16 @@ func analyzeExpression(s string, op operation) (a int, b int, o operation, rom b
 		numbers[i] = strings.TrimSpace(numbers[i])
 	}
 
-	// проверяем, что операндов не больше двух
-	if len(numbers) > 2 {
-		return 0, 0, op, false, errors.New(notMathsExpression)
-	}
-
 	// проверяем, не спряталась ли еще одна операция в выражении
 	_, err = getOperator(numbers[1])
 
-	if err == nil {
+	if err == nil || len(numbers) > 2 {
 		return 0, 0, op, false, errors.New(moreThenOneOperation)
+	}
+
+	// проверяем, что операндов не больше двух
+	if len(numbers) > 2 {
+		return 0, 0, op, false, errors.New(notMathsExpression)
 	}
 
 	var numInts []int

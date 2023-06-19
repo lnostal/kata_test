@@ -5,7 +5,7 @@ import (
 	"testing"
 )
 
-func TestConvToRoman(t *testing.T) {
+func Test_ConvToRoman(t *testing.T) {
 	got, _ := convertArabicToRoman(89)
 	want := "LXXXIX"
 
@@ -14,7 +14,7 @@ func TestConvToRoman(t *testing.T) {
 	}
 }
 
-func TestConvToArabic(t *testing.T) {
+func Test_ConvToArabic(t *testing.T) {
 	got, _ := convertRomanToArabic("IV")
 	want := 4
 
@@ -69,7 +69,7 @@ func Test_GetNotMathsExpression(t *testing.T) {
 }
 
 func Test_GetMoreThenOneOperations(t *testing.T) {
-	_, err := calc("1 + 2 + 3")
+	_, err := calc("1 + 2 + V")
 	want := fmt.Sprintf(moreThenOneOperation)
 
 	if err.Error() != want {
