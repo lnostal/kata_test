@@ -49,7 +49,7 @@ func getOperator(s string) (operation, error) {
 	return "", errors.New(notMathsExpression)
 }
 
-func analyzeExpression(s string, op operation) (a int, b int, o operation, err error) {
+func analyzeExpression(s string, op operation) (a int, b int, o operation, rom bool, err error) {
 
 	numbers := strings.Split(s, string(op))
 
@@ -59,32 +59,47 @@ func analyzeExpression(s string, op operation) (a int, b int, o operation, err e
 
 	// проверяем, что операндов не больше двух
 	if len(numbers) > 2 {
-		return 0, 0, op, errors.New(notMathsExpression)
+		return 0, 0, op, false, errors.New(notMathsExpression)
 	}
 
 	// проверяем, не спряталась ли еще одна операция в выражении
 	_, err = getOperator(numbers[1])
 
 	if err == nil {
-		return 0, 0, op, errors.New(moreThenOneOperation)
+		return 0, 0, op, false, errors.New(moreThenOneOperation)
 	}
 
 	var numInts []int
+	romanCounts := 0
+
 	// проверяем, что все операнды - числа и не больше 10
 	for _, numStr := range numbers {
 		num, err := strconv.Atoi(numStr)
 		if err != nil {
-			return 0, 0, op, errors.New(fmt.Sprintf(notNumber, numStr))
+
+			// проверяем, это Roman или нет
+			roman, n := isRoman(numStr)
+			if roman {
+				numInts = append(numInts, n)
+				romanCounts++
+				continue
+			}
+
+			return 0, 0, op, false, errors.New(fmt.Sprintf(notNumber, numStr))
 		}
 
 		if num > 10 || num < 1 {
-			return 0, 0, op, errors.New(fmt.Sprintf(notInTheRange, num))
+			return 0, 0, op, false, errors.New(fmt.Sprintf(notInTheRange, num))
 		}
 
 		numInts = append(numInts, num)
 	}
 
-	return numInts[0], numInts[1], op, nil
+	if romanCounts == 1 {
+		return 0, 0, op, false, errors.New(differentSystems)
+	}
+
+	return numInts[0], numInts[1], op, romanCounts == 2, nil
 }
 
 func returnError(e error) {
@@ -108,41 +123,52 @@ func calculate(a, b int, op operation) (int, error) {
 	return 0, errors.New(unknown)
 }
 
-func main() {
+func isRoman(s string) (bool, int) {
+	num, err := ConvertRomanToArabic(s)
 
-	//fmt.Println("Введите выражение")
-	//text, err := readExpression()
-	//
-	//if err != nil {
-	//	returnError(err)
-	//	return
-	//}
-	//
-	//op, err := getOperator(text)
-	//
-	//if err != nil {
-	//	returnError(err)
-	//	return
-	//}
-	//
-	//a, b, op, err := analyzeExpression(text, op)
-	//
-	//if err != nil {
-	//	returnError(err)
-	//	return
-	//}
-	//
-	//answer, _ := calculate(a, b, op)
-	//fmt.Printf("Ответ: %d\n", answer)
-
-	for i := 0; i <= 100; i++ {
-		num, err := ConvertArabicToRoman(i)
-
-		if err != nil {
-			fmt.Printf("%d\t%s\n", i, err.Error())
-		} else {
-			fmt.Printf("%d\t%s\n", i, num)
-		}
+	if err != nil {
+		return false, 0
 	}
 
+	return true, num
+}
+
+func main() {
+
+	fmt.Println("Введите выражение")
+	text, err := readExpression()
+
+	if err != nil {
+		returnError(err)
+		return
+	}
+
+	op, err := getOperator(text)
+
+	if err != nil {
+		returnError(err)
+		return
+	}
+
+	a, b, op, isRoman, err := analyzeExpression(text, op)
+
+	if err != nil {
+		returnError(err)
+		return
+	}
+
+	answer, _ := calculate(a, b, op)
+
+	if isRoman {
+		ansStr, err := ConvertArabicToRoman(answer)
+		if err != nil {
+			returnError(err)
+			return
+		}
+
+		fmt.Printf("Ответ: %s\n", ansStr)
+		return
+	}
+
+	fmt.Printf("Ответ: %d\n", answer)
 }

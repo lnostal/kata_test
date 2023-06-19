@@ -36,6 +36,7 @@ func ConvertRomanToArabic(number string) (int, error) {
 }
 
 func ConvertArabicToRoman(number int) (string, error) {
+
 	if number < 1 {
 		return "", errors.New(fmt.Sprintf(onlyPositiveNumbersInRoman, number))
 	}
