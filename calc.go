@@ -9,27 +9,6 @@ import (
 	"strings"
 )
 
-// операции
-type operation string
-
-const (
-	addition       = "+"
-	subtraction    = "-"
-	division       = "/"
-	multiplication = "*"
-)
-
-// ошибки
-const alert = "Ошибка: "
-
-const (
-	notMathsExpression   = alert + "Строка не является математической операцией"
-	notInTheRange        = alert + "%d ∉ (1,10)"
-	moreThenOneOperation = alert + "В выражении больше двух операндов"
-	notNumber            = alert + "%s не является числом"
-	unknown              = alert + "¯\\_(ツ)_/¯"
-)
-
 func readExpression() (string, error) {
 
 	reader := bufio.NewReader(os.Stdin)
@@ -50,7 +29,7 @@ func readExpression() (string, error) {
 		}
 	}
 
-	if len(splited)-countEmpties != 3 {
+	if len(splited)-countEmpties < 3 {
 		return "", errors.New(notMathsExpression)
 	}
 
@@ -118,7 +97,6 @@ func calculate(a, b int, op operation) (int, error) {
 	switch op {
 	case addition:
 		return a + b, nil
-
 	case subtraction:
 		return a - b, nil
 	case division:
@@ -132,29 +110,39 @@ func calculate(a, b int, op operation) (int, error) {
 
 func main() {
 
-	fmt.Println("Введите выражение")
-	text, err := readExpression()
+	//fmt.Println("Введите выражение")
+	//text, err := readExpression()
+	//
+	//if err != nil {
+	//	returnError(err)
+	//	return
+	//}
+	//
+	//op, err := getOperator(text)
+	//
+	//if err != nil {
+	//	returnError(err)
+	//	return
+	//}
+	//
+	//a, b, op, err := analyzeExpression(text, op)
+	//
+	//if err != nil {
+	//	returnError(err)
+	//	return
+	//}
+	//
+	//answer, _ := calculate(a, b, op)
+	//fmt.Printf("Ответ: %d\n", answer)
 
-	if err != nil {
-		returnError(err)
-		return
+	for i := 0; i <= 100; i++ {
+		num, err := ConvertArabicToRoman(i)
+
+		if err != nil {
+			fmt.Printf("%d\t%s\n", i, err.Error())
+		} else {
+			fmt.Printf("%d\t%s\n", i, num)
+		}
 	}
-
-	op, err := getOperator(text)
-
-	if err != nil {
-		returnError(err)
-		return
-	}
-
-	a, b, op, err := analyzeExpression(text, op)
-
-	if err != nil {
-		returnError(err)
-		return
-	}
-
-	answer, _ := calculate(a, b, op)
-	fmt.Printf("Ответ: %d\n", answer)
 
 }
